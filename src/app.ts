@@ -1,17 +1,21 @@
+import "reflect-metadata";
 import express from "express";
 import cors from "cors";
 
-import { PORT } from "./config";
+import { NODE_ENV, PORT } from "./config";
+import { Route } from "./interfaces/route.interface";
 
 export class App {
   public app: express.Application;
   public port: string | number;
   public env: string;
 
-  constructor() {
+  constructor(routes: Route[]) {
     this.app = express();
     this.port = PORT || 3004;
-    this.env = "development";
+    this.env = NODE_ENV || "development";
+
+    this.initializeRoutes(routes);
   }
 
   public listen() {
@@ -33,5 +37,14 @@ export class App {
         allowedHeaders: ["Content-Type"],
       })
     );
+
+    // Middleware для парсингу JSON
+    this.app.use(express.json());
+  }
+
+  public initializeRoutes(routes: Route[]) {
+    routes.forEach((route) => {
+      this.app.use("/api/v1", route.router);
+    });
   }
 }
