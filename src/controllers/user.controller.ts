@@ -6,18 +6,23 @@ import { UserService } from "@services/user.service";
 export class UserController {
   public user = Container.get(UserService);
 
-  public createUser = async (req: Request, res: Response, next: NextFunction) => {
+  public userRegister = async (req: Request, res: Response) => {
     try {
-      console.log("body", req.body);
-
       const user = await this.user.createUser(req.body);
-      console.log(user);
-
-      const response = new ApiResponse("success", user, "User created");
-
+      const response = new ApiResponse("success", "User created", user);
       res.status(200).json(response);
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      res.status(401).json(new ApiResponse("fail", error.message));
+    }
+  };
+
+  public userLogin = async (req: Request, res: Response) => {
+    try {
+      const user = await this.user.userLogin(req.body);
+      const response = new ApiResponse("success", "User is logged in", user);
+      res.status(200).json(response);
+    } catch (error: any) {
+      res.status(401).json(new ApiResponse("fail", error.message));
     }
   };
 }

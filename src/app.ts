@@ -15,6 +15,7 @@ export class App {
     this.port = PORT || 3004;
     this.env = NODE_ENV || "development";
 
+    this.initializeMiddlewares();
     this.initializeRoutes(routes);
   }
 
