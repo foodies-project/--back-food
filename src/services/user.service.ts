@@ -1,11 +1,12 @@
 import { Service } from "typedi";
 import { prisma } from "@utils/prisma_db";
 import { CreateUserDto, dtos, LoginUserDto } from "@dtos/user.dto";
-import { User, UserResponse } from "@interfaces/user.interface";
+import { UserResponse } from "@interfaces/user.interface";
 import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
 import { checkPassword, hashPassword } from "@utils/bcrypt";
 import { generateToken } from "@utils/jwt";
+import { CustomError } from "@errors/CustomError";
 
 @Service()
 export class UserService {
@@ -14,7 +15,7 @@ export class UserService {
   public async validateData(userData: any, type: "create" | "login"): Promise<void> {
     // Перевіряємо, чи об'єкт userData визначений
     if (!userData) {
-      throw new Error("User data is undefined");
+      throw new CustomError(400, "User data is undefined");
     }
 
     // Для того щоб працював validate перетворюємо userData з простого об'єкта
@@ -22,7 +23,10 @@ export class UserService {
     const userInstance = plainToInstance(dtos[type], userData);
     const errors = await validate(userInstance);
     if (errors.length > 0) {
-      throw new Error(`Validation failed: ${errors.map((e) => Object.values(e.constraints || {}).join("; "))}`);
+      throw new CustomError(
+        400,
+        `Validation failed: ${errors.map((e) => Object.values(e.constraints || {}).join("; "))}`
+      );
     }
   }
 
@@ -34,7 +38,7 @@ export class UserService {
     const existingUser = await this.user.findUnique({ where: { email: email } });
 
     if (existingUser) {
-      throw new Error(`User ${email} already exists`);
+      throw new CustomError(401, `User ${email} already exists`);
     }
 
     const token = generateToken({ email: email, name: name });
@@ -57,12 +61,12 @@ export class UserService {
 
     const existingUser = await this.user.findUnique({ where: { email: email } });
     if (!existingUser) {
-      throw new Error(`User ${email} is not found`);
+      throw new CustomError(404, `User ${email} is not found`);
     }
 
     const passwordIsValid = await checkPassword(password, existingUser.password);
     if (!passwordIsValid) {
-      throw new Error(`Password is not valid`);
+      throw new CustomError(401, `Password is not valid`);
     }
 
     const token = generateToken({ email, name: existingUser.name });

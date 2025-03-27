@@ -41,6 +41,8 @@ export class App {
 
     // Middleware для парсингу JSON
     this.app.use(express.json());
+
+    this.app.use('/uploads', express.static('uploads'));
   }
 
   public initializeRoutes(routes: Route[]) {

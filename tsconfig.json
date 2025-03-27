@@ -16,7 +16,8 @@
       "@utils/*": ["src/utils/*"],
       "@config/*": ["src/config/*"],
       "@interfaces/*": ["src/interfaces/*"],
-      "@dtos/*": ["src/dtos/*"]
+      "@dtos/*": ["src/dtos/*"],
+      "@errors/*": ["src/errors/*"],
     }
   }
 }
