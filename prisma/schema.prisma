@@ -25,5 +25,21 @@ model User {
 model Cuisine {
   id   Int    @id @default(autoincrement()) 
   name String @unique
-  icon String // Зберігає шлях або URL до іконки для типу їжі
+  icon String 
+
+  restaurants RestaurantCard[]
 }
+
+model RestaurantCard {
+  id            Int      @id @default(autoincrement()) 
+  name          String   
+  photo         String   
+  cuisineId     Int
+  cuisine       Cuisine  @relation(fields: [cuisineId], references: [id]) 
+  rating        Float    @default(1.0)
+  deliveryPrice Float    
+  minPrepTime   Int      
+  maxPrepTime   Int      
+}
+
+
