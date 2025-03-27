@@ -12,6 +12,6 @@ export class UploadRoute implements Route {
   }
 
   private initializeRoutes() {
-    this.router.post(`${this.path}/:file`, this.upload.getFile);
+    this.router.get(`${this.path}/:file`, this.upload.getFile);
   }
 }

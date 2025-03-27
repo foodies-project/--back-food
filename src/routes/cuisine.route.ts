@@ -3,7 +3,7 @@ import { Route } from "@interfaces/route.interface";
 import { Router } from "express";
 
 export class CuisineRoute implements Route {
-  public path = "/cuisine";
+  public path = "/cuisines";
   public router: Router = Router();
   public cuisine = new CuisineController();
 
