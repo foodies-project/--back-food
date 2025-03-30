@@ -61,12 +61,12 @@ export class UserService {
 
     const existingUser = await this.user.findUnique({ where: { email: email } });
     if (!existingUser) {
-      throw new CustomError(404, `User ${email} is not found`);
+      throw new CustomError(404, "User not found");
     }
 
     const passwordIsValid = await checkPassword(password, existingUser.password);
     if (!passwordIsValid) {
-      throw new CustomError(401, `Password is not valid`);
+      throw new CustomError(401, "Password is not valid");
     }
 
     const token = generateToken({ email, name: existingUser.name });

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Restaurant" ADD COLUMN     "address" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "distance" DOUBLE PRECISION NOT NULL DEFAULT 0.0;

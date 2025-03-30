@@ -27,16 +27,22 @@ model Cuisine {
   name String @unique
   icon String 
 
-  restaurants RestaurantCard[]
+  restaurants Restaurant[]
 }
 
-model RestaurantCard {
+model Restaurant {
   id            Int      @id @default(autoincrement()) 
+
   name          String   
   photo         String   
   cuisineId     Int
+  isOpen        Boolean  @default(false)
   cuisine       Cuisine  @relation(fields: [cuisineId], references: [id]) 
   rating        Float    @default(1.0)
+
+  address       String @default("")
+  distance      Float @default(0.0)
+
   deliveryPrice Float    
   minPrepTime   Int      
   maxPrepTime   Int      

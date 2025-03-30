@@ -11,7 +11,7 @@ export class CuisineController {
       const cuisines = await this.cuisine.getCuisines();
       res.status(200).json(new ApiResponse("success", "Data sent", cuisines));
     } catch (error: any) {
-      res.status(error.statusCode).json(new ApiResponse("fail", error.message));
+      res.status(error).json(new ApiResponse("fail", error.message));
     }
   };
 }
