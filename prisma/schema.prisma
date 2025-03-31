@@ -48,6 +48,7 @@ model Restaurant {
   maxPrepTime   Int      
 
   Dishes Dish[]
+  TypesOfDish TypeOfDish[]
 }
 
 model Dish {
@@ -57,8 +58,22 @@ model Dish {
   price Float @default(0.0)
   description String
   photo String  
-
+  numberOfOrders Int @default(0)
+  
   restaurantId Int
+
+  TypesOfDish TypeOfDish[]
   Restaurant  Restaurant @relation(fields: [restaurantId], references: [id])
 }
 
+model TypeOfDish {
+  id  Int   @id @default(autoincrement())
+
+  name String
+  dishId Int
+
+  restaurantId Int @default(0)
+
+  Dish Dish @relation(fields: [dishId], references: [id])
+  Restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+}

@@ -3,7 +3,7 @@ import { Route } from "@interfaces/route.interface";
 import { Router } from "express";
 
 export class RestaurantRoute implements Route {
-  public path = "/restaurant";
+  public path = "/restaurants";
   public router: Router = Router();
   public restaurant = new RestaurantController();
 
@@ -12,6 +12,7 @@ export class RestaurantRoute implements Route {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}/:cuisine`, this.restaurant.getRestaurantsByCuisine);
+    this.router.get(`${this.path}/cuisines/:cuisine`, this.restaurant.getRestaurantsByCuisine);
+    this.router.get(`${this.path}/:id`, this.restaurant.getRestaurantById);
   }
 }

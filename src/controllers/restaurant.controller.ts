@@ -18,4 +18,17 @@ export class RestaurantController {
       res.status(error.statusCode).json(new ApiResponse("fail", error.message));
     }
   };
+
+  public getRestaurantById = async (req: Request, res: Response) => {
+    try {
+      const id = req.params.id;
+      console.log('id:', id);
+      
+
+      const restaurant = await this.restaurant.getRestaurantById(Number(id));
+      res.status(200).json(new ApiResponse("success", "Restaurant retrieved successfully", restaurant));
+    } catch (error: any) {
+      res.status(error.statusCode).json(new ApiResponse("fail", error.message));
+    }
+  };
 }
