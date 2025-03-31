@@ -6,13 +6,43 @@ import { Service } from "typedi";
 export class RestaurantService {
   public restaurant = prisma.restaurant;
 
-  public getRestaurants = async (cuisine: string) => {
+  public getRestaurants = async (cuisine: string, type: "delivery" | "pickup" | "all") => {
+    const baseSelect = {
+      id: true,
+      name: true,
+      photo: true,
+      isOpen: true,
+      Cuisine: {
+        select: {
+          name: true,
+        },
+      },
+      rating: true,
+    };
+
+    const typeSelect = {
+      delivery: {
+        ...baseSelect,
+        deliveryPrice: true,
+        minPrepTime: true,
+        maxPrepTime: true,
+      },
+      pickup: {
+        ...baseSelect,
+        address: true,
+        distance: true,
+      },
+    };
+
+    const select = type === "all" ? undefined : typeSelect[type];
+
     const restaurants = await this.restaurant.findMany({
       where: {
-        cuisine: {
+        Cuisine: {
           name: cuisine,
         },
       },
+      select,
     });
 
     if (restaurants.length === 0) {
