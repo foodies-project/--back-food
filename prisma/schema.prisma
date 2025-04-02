@@ -77,3 +77,22 @@ model TypeOfDish {
   Dish Dish @relation(fields: [dishId], references: [id])
   Restaurant Restaurant @relation(fields: [restaurantId], references: [id])
 }
+
+model Cart {
+  id  Int   @id @default(autoincrement())
+
+  Meal Meal[]
+}
+
+model Meal {
+  id  Int   @id @default(autoincrement())
+
+  name String 
+  price Float @default(0.0)
+  quantity Int @default(0)
+
+  cartId Int
+
+  Cart Cart @relation(fields: [cartId], references: [id])
+}
+

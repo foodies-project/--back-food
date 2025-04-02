@@ -12,7 +12,7 @@ export class RestaurantRoute implements Route {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}/cuisines/:cuisine`, this.restaurant.getRestaurantsByCuisine);
+    this.router.get(`${this.path}/cuisines`, this.restaurant.getRestaurantsByCuisine);
     this.router.get(`${this.path}/:id`, this.restaurant.getRestaurantById);
   }
 }

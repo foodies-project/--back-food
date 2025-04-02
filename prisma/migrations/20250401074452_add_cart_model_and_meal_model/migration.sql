@@ -1,0 +1,24 @@
+-- CreateTable
+CREATE TABLE "Cart" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "subtotal" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "delivery" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "total" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+
+    CONSTRAINT "Cart_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Meal" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    "quantity" INTEGER NOT NULL DEFAULT 0,
+    "cartId" INTEGER NOT NULL,
+
+    CONSTRAINT "Meal_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Meal" ADD CONSTRAINT "Meal_cartId_fkey" FOREIGN KEY ("cartId") REFERENCES "Cart"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

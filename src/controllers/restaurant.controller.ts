@@ -8,11 +8,13 @@ export class RestaurantController {
 
   public getRestaurantsByCuisine = async (req: Request, res: Response) => {
     try {
-      const isValidOption = (value: any): value is "pickup" | "delivery" => value === "pickup" || value === "delivery";
+      const isValidType = (value: any): value is "pickup" | "delivery" => value === "pickup" || value === "delivery";
 
-      const type = isValidOption(req.query.type) ? req.query.type : "all";
+      const isValidCuisine = (value: any) => value;
 
-      const restaurants = await this.restaurant.getRestaurants(req.params.cuisine, type);
+      const type = isValidType(req.query.type) ? req.query.type : "all";
+
+      const restaurants = await this.restaurant.getRestaurants(isValidCuisine(req.query.cuisine), type);
       res.status(200).json(new ApiResponse("success", "Restaurants retrieved successfully", restaurants));
     } catch (error: any) {
       res.status(error.statusCode).json(new ApiResponse("fail", error.message));
@@ -22,8 +24,7 @@ export class RestaurantController {
   public getRestaurantById = async (req: Request, res: Response) => {
     try {
       const id = req.params.id;
-      console.log('id:', id);
-      
+      console.log("id:", id);
 
       const restaurant = await this.restaurant.getRestaurantById(Number(id));
       res.status(200).json(new ApiResponse("success", "Restaurant retrieved successfully", restaurant));
