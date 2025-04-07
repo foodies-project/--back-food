@@ -18,11 +18,21 @@ export class CartController {
 
   public addItemToCart = async (req: Request, res: Response) => {
     try {
-      const meal = await this.cart.addItemToCart(req.body.name, req.body.price)
+      const meal = await this.cart.addItemToCart(req.body.name, req.body.price);
 
       res.status(200).json(new ApiResponse("success", "Meal added to cart", meal));
     } catch (error: any) {
       res.status(error.statusCode).json(new ApiResponse("fail", error.message));
     }
-  }
+  };
+
+  public getCountFromCart = async (req: Request, res: Response) => {
+    try {
+      const count = await this.cart.getCountFromCart();
+
+      res.status(200).json(new ApiResponse("success", "Retrieve count meal from cart", { count }));
+    } catch (error: any) {
+      res.status(error.statusCode).json(new ApiResponse("fail", error.message));
+    }
+  };
 }

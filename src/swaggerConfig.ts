@@ -277,6 +277,28 @@ export const restaurantsPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+  "/cart/count": {
+    get: {
+      tags: ["Cart"],
+      summary: "Отримати кількість даних в корзині",
+      description: "Повертає кількість даних в корзині",
+      responses: {
+        "200": {
+          description: "Кількість даних в корзині",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  count: { type: "integer", example: 1 },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 // Об'єднуємо всі шляхи в один об'єкт

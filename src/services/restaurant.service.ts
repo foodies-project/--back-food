@@ -3,38 +3,38 @@ import { Restaurant, RestaurantById } from "@interfaces/restaurant.interface";
 import { prisma } from "@utils/prisma_db";
 import { Service } from "typedi";
 
+const baseSelect = {
+  id: true,
+  name: true,
+  photo: true,
+  isOpen: true,
+  Cuisine: {
+    select: {
+      name: true,
+    },
+  },
+  rating: true,
+};
+
+const typeSelect = {
+  del: {
+    ...baseSelect,
+    deliveryPrice: true,
+    minPrepTime: true,
+    maxPrepTime: true,
+  },
+  pick: {
+    ...baseSelect,
+    address: true,
+    distance: true,
+  },
+};
+
 @Service()
 export class RestaurantService {
   public restaurant = prisma.restaurant;
 
-  public getRestaurants = async (cuisine: string, type: "delivery" | "pickup" | "all") => {
-    const baseSelect = {
-      id: true,
-      name: true,
-      photo: true,
-      isOpen: true,
-      Cuisine: {
-        select: {
-          name: true,
-        },
-      },
-      rating: true,
-    };
-
-    const typeSelect = {
-      delivery: {
-        ...baseSelect,
-        deliveryPrice: true,
-        minPrepTime: true,
-        maxPrepTime: true,
-      },
-      pickup: {
-        ...baseSelect,
-        address: true,
-        distance: true,
-      },
-    };
-
+  public getRestaurants = async (cuisine: string, type: "del" | "pick" | "all") => {
     const select = type === "all" ? undefined : typeSelect[type];
 
     const restaurants = await this.restaurant.findMany({
@@ -47,7 +47,9 @@ export class RestaurantService {
     });
 
     if (restaurants.length === 0) {
-      throw new CustomError(404, "Restaurants not found");
+      throw new CustomError(404, "Restaurants not found", [
+        "Unfortunately, no restaurants were found for your search. Try changing filters or looking at other categories.",
+      ]);
     }
 
     return restaurants;

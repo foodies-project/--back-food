@@ -29,4 +29,10 @@ export class CartService {
 
     return meal;
   };
+
+  public getCountFromCart = async () => {
+    const count = this.meal.count();
+
+    return count;
+  };
 }

@@ -8,16 +8,24 @@ export class RestaurantController {
 
   public getRestaurantsByCuisine = async (req: Request, res: Response) => {
     try {
-      const isValidType = (value: any): value is "pickup" | "delivery" => value === "pickup" || value === "delivery";
+      const isValidType = (value: any): value is "pick" | "del" =>
+        value === "pick" || value === "del";
 
       const isValidCuisine = (value: any) => value;
 
-      const type = isValidType(req.query.type) ? req.query.type : "all";
+      const type = isValidType(req.query.orderType) ? req.query.orderType : "all";
 
-      const restaurants = await this.restaurant.getRestaurants(isValidCuisine(req.query.cuisine), type);
-      res.status(200).json(new ApiResponse("success", "Restaurants retrieved successfully", restaurants));
+      const restaurants = await this.restaurant.getRestaurants(
+        isValidCuisine(req.query.cuisine),
+        type
+      );
+      res
+        .status(200)
+        .json(new ApiResponse("success", "Restaurants retrieved successfully", restaurants));
     } catch (error: any) {
-      res.status(error.statusCode).json(new ApiResponse("fail", error.message));
+      res
+        .status(error.statusCode)
+        .json(new ApiResponse("fail", error.message, { details: error.details }));
     }
   };
 
@@ -27,7 +35,9 @@ export class RestaurantController {
       console.log("id:", id);
 
       const restaurant = await this.restaurant.getRestaurantById(Number(id));
-      res.status(200).json(new ApiResponse("success", "Restaurant retrieved successfully", restaurant));
+      res
+        .status(200)
+        .json(new ApiResponse("success", "Restaurant retrieved successfully", restaurant));
     } catch (error: any) {
       res.status(error.statusCode).json(new ApiResponse("fail", error.message));
     }

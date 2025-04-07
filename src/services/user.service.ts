@@ -21,7 +21,11 @@ export class UserService {
     // Для того щоб працював validate перетворюємо userData з простого об'єкта
     // у екземпляр класу
     const userInstance = plainToInstance(dtos[type], userData);
+
+    console.log("userData:", userData);
+    console.log("userInstance:", userInstance);
     const errors = await validate(userInstance);
+    console.log("errors:", errors);
     if (errors.length > 0) {
       throw new CustomError(
         400,
@@ -30,7 +34,7 @@ export class UserService {
     }
   }
 
-  public async createUser(userData: CreateUserDto): Promise<{ user: UserResponse; token: string }> {
+  public async createUser(userData: CreateUserDto): Promise<{ User: UserResponse; token: string }> {
     await this.validateData(userData, "create");
 
     const { email, name, password } = userData;
@@ -38,7 +42,7 @@ export class UserService {
     const existingUser = await this.user.findUnique({ where: { email: email } });
 
     if (existingUser) {
-      throw new CustomError(401, `User ${email} already exists`);
+      throw new CustomError(401, "User already exists");
     }
 
     const token = generateToken({ email: email, name: name });
@@ -51,7 +55,7 @@ export class UserService {
         id: true,
       },
     });
-    return { user: createdUser, token };
+    return { User: createdUser, token };
   }
 
   public async userLogin(userData: LoginUserDto): Promise<any> {
@@ -59,17 +63,22 @@ export class UserService {
 
     const { email, password } = userData;
 
-    const existingUser = await this.user.findUnique({ where: { email: email } });
+    const existingUser = await this.user.findUnique({
+      where: { email: email },
+    });
     if (!existingUser) {
       throw new CustomError(404, "User not found");
     }
 
     const passwordIsValid = await checkPassword(password, existingUser.password);
     if (!passwordIsValid) {
-      throw new CustomError(401, "Password is not valid");
+      throw new CustomError(401, "Data is not valid");
     }
 
     const token = generateToken({ email, name: existingUser.name });
-    return { token };
+    return {
+      User: { id: existingUser.id, email: existingUser.email, name: existingUser.name },
+      token,
+    };
   }
 }
