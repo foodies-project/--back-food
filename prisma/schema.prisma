@@ -14,12 +14,16 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement()) // Унікальний ідентифікатор користувача
-  name      String   // Ім'я користувача
-  email     String   @unique // Унікальний email користувача
-  password  String   // Пароль користувача
-  createdAt DateTime @default(now()) // Дата створення запису
-  updatedAt DateTime @updatedAt // Дата останнього оновлення запису
+  id        Int      @id @default(autoincrement()) 
+
+  name      String   
+  email     String   @unique 
+  password  String   
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt 
+
+  OrderHistory OrderHistory?
 }
 
 model Cuisine {
@@ -37,7 +41,6 @@ model Restaurant {
   photo         String   
   cuisineId     Int
   isOpen        Boolean  @default(false)
-  Cuisine       Cuisine  @relation(fields: [cuisineId], references: [id]) 
   rating        Float    @default(1.0)
 
   address       String @default("")
@@ -47,8 +50,8 @@ model Restaurant {
   minPrepTime   Int      
   maxPrepTime   Int      
 
-  Dishes Dish[]
-  TypesOfDish TypeOfDish[]
+  Cuisine       Cuisine  @relation(fields: [cuisineId], references: [id]) 
+  Categories Category[]
 }
 
 model Dish {
@@ -59,40 +62,40 @@ model Dish {
   description String
   photo String  
   numberOfOrders Int @default(0)
-  
-  restaurantId Int
 
-  TypesOfDish TypeOfDish[]
-  Restaurant  Restaurant @relation(fields: [restaurantId], references: [id])
+  categoryId Int?
+  
+  Orders Order[] @relation("OrderDishes")
+  Category Category? @relation(fields: [categoryId], references: [id])
 }
 
-model TypeOfDish {
+model Category {
   id  Int   @id @default(autoincrement())
 
   name String
-  dishId Int
 
   restaurantId Int @default(0)
 
-  Dish Dish @relation(fields: [dishId], references: [id])
+  Dishes Dish[]
   Restaurant Restaurant @relation(fields: [restaurantId], references: [id])
 }
 
-model Cart {
-  id  Int   @id @default(autoincrement())
+model Order {
+  id Int @id @default(autoincrement())
 
-  Meal Meal[]
+  createdAt DateTime @default(now()) 
+  orderHistoryId Int
+
+  Dishes Dish[] @relation("OrderDishes")
+  OrderHistory OrderHistory @relation(fields: [orderHistoryId], references: [id])
 }
 
-model Meal {
-  id  Int   @id @default(autoincrement())
 
-  name String 
-  price Float @default(0.0)
-  quantity Int @default(0)
+model OrderHistory {
+  id Int @id @default(autoincrement())
 
-  cartId Int
+  userId Int @unique
 
-  Cart Cart @relation(fields: [cartId], references: [id])
+  User User @relation(fields: [userId], references: [id])
+  Orders Order[] 
 }
-

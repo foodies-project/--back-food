@@ -13,7 +13,7 @@ export interface RestaurantById {
   Cuisine: {
     name: string;
   };
-  TypesOfDish: {
+  Categories: {
     id: number;
     name: string;
   }[];

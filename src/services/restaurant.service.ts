@@ -8,6 +8,7 @@ const baseSelect = {
   name: true,
   photo: true,
   isOpen: true,
+  deliveryPrice: true,
   Cuisine: {
     select: {
       name: true,
@@ -19,7 +20,6 @@ const baseSelect = {
 const typeSelect = {
   del: {
     ...baseSelect,
-    deliveryPrice: true,
     minPrepTime: true,
     maxPrepTime: true,
   },
@@ -66,12 +66,14 @@ export class RestaurantService {
         deliveryPrice: true,
         minPrepTime: true,
         maxPrepTime: true,
+        address: true,
+        distance: true,
         Cuisine: {
           select: {
             name: true,
           },
         },
-        TypesOfDish: {
+        Categories: {
           select: {
             id: true,
             name: true,
