@@ -93,6 +93,45 @@ const authPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+  '/auth/users/{userId}': {
+    get: {
+      tags: ['Auth'],
+      summary: 'Отримати інформацію про користувача',
+      description: 'Інформація про користувача',
+      parameters: [
+        {
+          name: 'userId',
+          in: 'path',
+          required: true,
+          schema: { type: 'integer' },
+          description: 'Айді користувача',
+        },
+      ],
+      responses: {
+        '200': {
+          description: 'Успішний логін',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  id: { type: 'integer', example: 1 },
+                  name: { type: 'string', example: 'denis' },
+                  email: { type: 'string', example: 'example@gmail.com' },
+                  password: {
+                    type: 'string',
+                    example: '$2b$10$6ITOp3DZQRecOq.5g4ABNefl..guqFrwiu3Y0jhs84gVmsaoCEZia',
+                  },
+                  createdAt: { type: 'string', example: '2025-04-19T05:00:32.138Z' },
+                  updatedAt: { type: 'string', example: '2025-04-19T05:00:32.138Z' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 // Опис ендпоінтів для кухонь
@@ -268,6 +307,106 @@ export const restaurantsPaths: OpenAPIV3.PathsObject = {
       tags: ['Orders history'],
       summary: 'Отримати історію замовлень',
       description: 'Повертає історію замовлень',
+      parameters: [
+        {
+          name: 'userId',
+          in: 'query',
+          required: true,
+          schema: { type: 'number' },
+          description: 'Айді користувача по якому отримуємо історію замовлень',
+        },
+      ],
+      responses: {
+        '200': {
+          description: 'Повертає історію замовлень користувача',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success' },
+                  message: { type: 'string', example: 'Dishes by category are retrieved' },
+                  data: {
+                    type: 'object',
+                    properties: {
+                      id: { type: 'integer', example: 1 },
+                      userId: { type: 'integer', example: 1 },
+                      Orders: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer', example: 1 },
+                            createdAt: { type: 'string', example: 'Salmon futomaki' },
+                            orderHistoryId: { type: 'number', example: 1 },
+                            Dishes: {
+                              type: 'array',
+                              items: {
+                                type: 'object',
+                                properties: {
+                                  id: { type: 'integer', example: 1 },
+                                  name: { type: 'string', example: 'Chicken teriyaki BENTO' },
+                                  price: { type: 'integer', example: 13 },
+                                  description: {
+                                    type: 'string',
+                                    example:
+                                      '3 Futomaki, 3 California maki, Teriyaki chicken, Yasai sarada - vegetable salad, Onigiri - rice sandwich',
+                                  },
+                                  photo: {
+                                    type: 'string',
+                                    example: '/files/chicken-teriyaki-bento.jpg',
+                                  },
+                                  numberOfOrders: { type: 'number', example: 0 },
+                                  categoryId: { type: 'integer', example: 1 },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  '/order/{userId}': {
+    post: {
+      tags: ['Order'],
+      summary: 'Створити замовлення',
+      description: 'Повертає створене замовленя',
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                dishes: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      id: { type: 'integer', example: 1 },
+                      name: { type: 'string', example: 'Nanapuki' },
+                      price: { type: 'number', example: 15.5 },
+                      description: { type: 'string', example: 'nanapouki description' },
+                      photo: { type: 'string', example: '/files/nanapuki' },
+                      numberOfOrders: { type: 'integer', example: 0 },
+                      categoryId: { type: 'integer', example: 1 },
+                    },
+                  },
+                },
+              },
+              required: ['email', 'name', 'password'],
+            },
+          },
+        },
+      },
       parameters: [
         {
           name: 'userId',

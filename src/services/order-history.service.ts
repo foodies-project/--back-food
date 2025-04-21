@@ -12,7 +12,7 @@ export class OrderHistoryService {
       include: {
         Orders: {
           include: {
-            Dishes: true,
+            OrderItems: true,
           },
         },
       },
@@ -27,7 +27,7 @@ export class OrderHistoryService {
       include: {
         Orders: {
           include: {
-            Dishes: true,
+            OrderItems: true,
           },
         },
       },

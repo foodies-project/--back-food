@@ -32,4 +32,19 @@ export class UserController {
       }
     }
   };
+
+  public getUserById = async (req: Request, res: Response) => {
+    try {
+      const userId = req.params.userId as string;
+      const user = await this.user.getUserById(+userId);
+
+      res.status(200).json(new ApiResponse('success', 'User is retrieved', user));
+    } catch (error: any) {
+      if (error instanceof CustomError) {
+        res.status(error.statusCode).json(new ApiResponse('fail', error.message));
+      } else {
+        res.status(500).json(new ApiResponse('fail', 'Unexpected error' + error.message));
+      }
+    }
+  };
 }

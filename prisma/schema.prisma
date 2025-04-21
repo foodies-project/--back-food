@@ -65,7 +65,6 @@ model Dish {
 
   categoryId Int?
   
-  Orders Order[] @relation("OrderDishes")
   Category Category? @relation(fields: [categoryId], references: [id])
 }
 
@@ -80,13 +79,28 @@ model Category {
   Restaurant Restaurant @relation(fields: [restaurantId], references: [id])
 }
 
+model OrderItem {
+  id Int @id @default(autoincrement())
+
+  name  String
+  price Float @default(0.0)
+  photo String  
+  numberOfOrders Int @default(0)
+
+  categoryId Int?
+
+  orderId Int?
+
+  Order Order? @relation(fields: [orderId], references: [id])
+}
+
 model Order {
   id Int @id @default(autoincrement())
 
   createdAt DateTime @default(now()) 
   orderHistoryId Int
 
-  Dishes Dish[] @relation("OrderDishes")
+  OrderItems OrderItem[]
   OrderHistory OrderHistory @relation(fields: [orderHistoryId], references: [id])
 }
 
