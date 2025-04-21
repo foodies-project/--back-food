@@ -14,5 +14,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  backend: 
+    build: 
+      context: .
+    container_name: foodiego_back
+    ports:
+      - "3004:3004"
+    depends_on:
+      - postgres
+    environment: 
+      DATABASE_URL: postgresql://postgres:12345678@host.docker.internal:5432/foodies_db
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
 volumes:
   postgres_data:
