@@ -5,7 +5,7 @@ import { UserResponse } from '@interfaces/user.interface';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { checkPassword, hashPassword } from '@utils/bcrypt';
-import { generateToken } from '@utils/jwt';
+import { generateToken, validateToken } from '@utils/jwt';
 import { CustomError } from '@errors/CustomError';
 
 @Service()
@@ -29,7 +29,7 @@ export class UserService {
     }
   }
 
-  public async createUser(userData: CreateUserDto): Promise<{ User: UserResponse; token: string }> {
+  public async createUser(userData: CreateUserDto, res: any): Promise<UserResponse> {
     await this.validateData(userData, 'create');
 
     const { email, name, password } = userData;
@@ -40,7 +40,15 @@ export class UserService {
       throw new CustomError(401, 'User already exists');
     }
 
-    const token = generateToken({ email: email, name: name });
+    const token = generateToken({ email, name });
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 3600000 * 72,
+    });
+
     const hashedPassword = await hashPassword(password);
     const createdUser = await this.user.create({
       data: { email: email, password: hashedPassword, name: name },
@@ -50,16 +58,17 @@ export class UserService {
         id: true,
       },
     });
-    return { User: createdUser, token };
+    return createdUser;
   }
 
-  public async userLogin(userData: LoginUserDto): Promise<any> {
+  public async userLogin(userData: LoginUserDto, res: any): Promise<UserResponse> {
     await this.validateData(userData, 'login');
 
     const { email, password } = userData;
 
     const existingUser = await this.user.findUnique({
       where: { email: email },
+      select: { id: true, name: true, email: true, password: true },
     });
     if (!existingUser) {
       throw new CustomError(404, 'User not found');
@@ -71,15 +80,27 @@ export class UserService {
     }
 
     const token = generateToken({ email, name: existingUser.name });
-    return {
-      User: { id: existingUser.id, email: existingUser.email, name: existingUser.name },
-      token,
-    };
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 3600000 * 72,
+    });
+
+    return { name: existingUser.name, id: existingUser.id, email: existingUser.email };
   }
 
-  public getUserById = async (userId: number) => {
+  public getUser = async (token: string): Promise<UserResponse> => {
+    const payload: any = validateToken(token);
+
+    if (!payload) {
+      throw new CustomError(401, 'Token is not valid');
+    }
+
     const user = await this.user.findUnique({
-      where: { id: userId },
+      where: { email: payload.email },
+      select: { id: true, name: true, email: true },
     });
 
     if (!user) {

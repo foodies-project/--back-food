@@ -1,12 +1,13 @@
-import "reflect-metadata";
-import express from "express";
-import cors from "cors";
+import 'reflect-metadata';
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
-import { NODE_ENV, PORT } from "./config";
-import { Route } from "./interfaces/route.interface";
+import { NODE_ENV, PORT } from './config';
+import { Route } from './interfaces/route.interface';
 
-import swaggerUi from "swagger-ui-express";
-import { swaggerDocument } from "./swaggerConfig";
+import swaggerUi from 'swagger-ui-express';
+import { swaggerDocument } from './swaggerConfig';
 
 export class App {
   public app: express.Application;
@@ -16,7 +17,7 @@ export class App {
   constructor(routes: Route[]) {
     this.app = express();
     this.port = PORT || 3004;
-    this.env = NODE_ENV || "development";
+    this.env = NODE_ENV || 'development';
 
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
@@ -34,25 +35,26 @@ export class App {
   public initializeMiddlewares() {
     this.app.use(
       cors({
-        origin: "*",
-        credentials: true,
-        exposedHeaders: ["Content-Disposition"],
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type"],
+        origin: 'http://localhost:5173',
+        credentials: true, // Дозволяє передавати кукі
+        exposedHeaders: ['Content-Disposition'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type'],
       })
     );
 
-    // Middleware для парсингу JSON
+    this.app.use(cookieParser());
+
     this.app.use(express.json());
 
-    this.app.use("/uploads", express.static("uploads"));
+    this.app.use('/uploads', express.static('uploads'));
 
-    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   }
 
   public initializeRoutes(routes: Route[]) {
     routes.forEach((route) => {
-      this.app.use("/api/v1", route.router);
+      this.app.use('/api/v1', route.router);
     });
   }
 }

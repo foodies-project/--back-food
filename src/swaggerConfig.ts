@@ -93,20 +93,11 @@ const authPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
-  '/auth/users/{userId}': {
+  '/auth/users': {
     get: {
       tags: ['Auth'],
       summary: 'Отримати інформацію про користувача',
       description: 'Інформація про користувача',
-      parameters: [
-        {
-          name: 'userId',
-          in: 'path',
-          required: true,
-          schema: { type: 'integer' },
-          description: 'Айді користувача',
-        },
-      ],
       responses: {
         '200': {
           description: 'Успішний логін',
