@@ -20,6 +20,7 @@ export class RestaurantController {
         isValidCuisine(req.query.cuisine),
         type
       );
+
       res.status(200).json(new ApiResponse('Restaurants retrieved successfully', restaurants));
     } catch (error: any) {
       if (error instanceof CustomError) {

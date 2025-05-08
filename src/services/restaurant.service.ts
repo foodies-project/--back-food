@@ -47,9 +47,7 @@ export class RestaurantService {
     });
 
     if (restaurants.length === 0) {
-      throw new CustomError(404, 'Restaurants not found', [
-        'Unfortunately, no restaurants were found for your search. Try changing filters or looking at other categories.',
-      ]);
+      throw new CustomError(404, 'Restaurants not found');
     }
 
     return restaurants;

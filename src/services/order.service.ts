@@ -73,8 +73,8 @@ export class OrderService {
       clientFirstName: payload.name,
       clientEmail: payload.email,
       // returnUrl: 'http://localhost:5173/?order-type=del&cuisine=Sushi',
-      // returnUrl: 'https://d560-185-179-214-48.ngrok-free.app/?order-type=del&cuisine=Sushi',
-      serviceUrl: 'http://localhost:3004/api/v1/order/pay/validate',
+      returnUrl: 'https://front-food-production.up.railway.app/?order-type=del&cuisine=Sushi',
+      serviceUrl: 'https://back-food-production-62d6.up.railway.app/api/v1/order/pay/validate',
       signature,
     };
   };
