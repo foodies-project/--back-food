@@ -10,12 +10,12 @@ export class CuisineController {
   public getCuisines = async (req: Request, res: Response) => {
     try {
       const cuisines = await this.cuisine.getCuisines();
-      res.status(200).json(new ApiResponse('success', 'Data sent', cuisines));
+      res.status(200).json(new ApiResponse('Data sent', cuisines));
     } catch (error: any) {
       if (error instanceof CustomError) {
-        res.status(error.statusCode).json(new ApiResponse('fail', error.message));
+        res.status(error.statusCode).json(new ApiResponse(error.message));
       } else {
-        res.status(500).json(new ApiResponse('fail', 'Unexpected error' + error.message));
+        res.status(500).json(new ApiResponse('Unexpected error' + error.message));
       }
     }
   };

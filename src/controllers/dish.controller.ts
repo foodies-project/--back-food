@@ -18,14 +18,12 @@ export class CategoryController {
       }
 
       const categories = await this.dish.getDishesByCategoryAndRest(category, +restaurantId);
-      res
-        .status(200)
-        .json(new ApiResponse('success', 'Dishes by category are retrieved', categories));
+      res.status(200).json(new ApiResponse('Dishes by category are retrieved', categories));
     } catch (error: any) {
       if (error instanceof CustomError) {
-        res.status(error.statusCode).json(new ApiResponse('fail', error.message));
+        res.status(error.statusCode).json(new ApiResponse(error.message));
       } else {
-        res.status(500).json(new ApiResponse('fail', 'Unexpected error' + error.message));
+        res.status(500).json(new ApiResponse('Unexpected error' + error.message));
       }
     }
   };

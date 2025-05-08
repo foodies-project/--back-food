@@ -1,14 +1,11 @@
-// src/swaggerDocs.ts
 import { OpenAPIV3 } from 'openapi-types';
 
-// Інформація про API
 export const swaggerInfo: OpenAPIV3.InfoObject = {
   title: 'API Documentation',
   version: '1.0.0',
   description: 'Документація для API з Auth, Cuisines та Restaurants',
 };
 
-// Налаштування серверів
 export const swaggerServers: OpenAPIV3.ServerObject[] = [
   {
     url: 'http://localhost:3004/api/v1',
@@ -16,7 +13,6 @@ export const swaggerServers: OpenAPIV3.ServerObject[] = [
   },
 ];
 
-// Опис ендпоінтів Auth
 const authPaths: OpenAPIV3.PathsObject = {
   '/auth/signup': {
     post: {
@@ -93,7 +89,7 @@ const authPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
-  '/auth/users': {
+  '/auth/user': {
     get: {
       tags: ['Auth'],
       summary: 'Отримати інформацію про користувача',
@@ -122,10 +118,39 @@ const authPaths: OpenAPIV3.PathsObject = {
         },
       },
     },
+    patch: {
+      tags: ['Auth'],
+      summary: 'Змінити інформацію про користувача',
+      description: 'Змінити інформацію про користувача',
+      responses: {
+        '200': {
+          description: 'Дані змінено',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  id: { type: 'integer', example: 1 },
+                  name: { type: 'string', example: 'denis' },
+                  email: { type: 'string', example: 'example@gmail.com' },
+                  password: {
+                    type: 'string',
+                    example: '$2b$10$6ITOp3DZQRecOq.5g4ABNefl..guqFrwiu3Y0jhs84gVmsaoCEZia',
+                  },
+                  photo: { type: 'string', example: 'photo-user.com' },
+                  phone: { type: 'string', example: '+380235438862' },
+                  createdAt: { type: 'string', example: '2025-04-19T05:00:32.138Z' },
+                  updatedAt: { type: 'string', example: '2025-04-19T05:00:32.138Z' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 };
 
-// Опис ендпоінтів для кухонь
 export const cuisinesPaths: OpenAPIV3.PathsObject = {
   '/cuisines': {
     get: {
@@ -155,7 +180,6 @@ export const cuisinesPaths: OpenAPIV3.PathsObject = {
   },
 };
 
-// Опис ендпоінтів для ресторанів
 export const restaurantsPaths: OpenAPIV3.PathsObject = {
   '/restaurants/cuisines': {
     get: {
@@ -236,6 +260,9 @@ export const restaurantsPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+};
+
+const dishesPath: OpenAPIV3.PathsObject = {
   '/dishes': {
     get: {
       tags: ['Dish'],
@@ -293,20 +320,14 @@ export const restaurantsPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+};
+
+const ordersPath: OpenAPIV3.PathsObject = {
   '/orders-history': {
     get: {
-      tags: ['Orders history'],
+      tags: ['Orders'],
       summary: 'Отримати історію замовлень',
       description: 'Повертає історію замовлень',
-      parameters: [
-        {
-          name: 'userId',
-          in: 'query',
-          required: true,
-          schema: { type: 'number' },
-          description: 'Айді користувача по якому отримуємо історію замовлень',
-        },
-      ],
       responses: {
         '200': {
           description: 'Повертає історію замовлень користувача',
@@ -367,7 +388,7 @@ export const restaurantsPaths: OpenAPIV3.PathsObject = {
   },
   '/order/{userId}': {
     post: {
-      tags: ['Order'],
+      tags: ['Orders'],
       summary: 'Створити замовлення',
       description: 'Повертає створене замовленя',
       requestBody: {
@@ -472,6 +493,8 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
   ...authPaths,
   ...cuisinesPaths,
   ...restaurantsPaths,
+  ...dishesPath,
+  ...ordersPath,
 };
 
 // Головний документ Swagger

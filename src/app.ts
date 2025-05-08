@@ -35,10 +35,10 @@ export class App {
   public initializeMiddlewares() {
     this.app.use(
       cors({
-        origin: 'http://localhost:5173',
-        credentials: true, // Дозволяє передавати кукі
+        origin: ['http://localhost:5173', 'https://d560-185-179-214-48.ngrok-free.app'],
+        credentials: true,
         exposedHeaders: ['Content-Disposition'],
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         allowedHeaders: ['Content-Type'],
       })
     );

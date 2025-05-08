@@ -20,14 +20,12 @@ export class RestaurantController {
         isValidCuisine(req.query.cuisine),
         type
       );
-      res
-        .status(200)
-        .json(new ApiResponse('success', 'Restaurants retrieved successfully', restaurants));
+      res.status(200).json(new ApiResponse('Restaurants retrieved successfully', restaurants));
     } catch (error: any) {
       if (error instanceof CustomError) {
-        res.status(error.statusCode).json(new ApiResponse('fail', error.message));
+        res.status(error.statusCode).json(new ApiResponse(error.message));
       } else {
-        res.status(500).json(new ApiResponse('fail', 'Unexpected error' + error.message));
+        res.status(500).json(new ApiResponse('Unexpected error' + error.message));
       }
     }
   };
@@ -37,14 +35,12 @@ export class RestaurantController {
       const id = req.params.id;
 
       const restaurant = await this.restaurant.getRestaurantById(Number(id));
-      res
-        .status(200)
-        .json(new ApiResponse('success', 'Restaurant retrieved successfully', restaurant));
+      res.status(200).json(new ApiResponse('Restaurant retrieved successfully', restaurant));
     } catch (error: any) {
       if (error instanceof CustomError) {
-        res.status(error.statusCode).json(new ApiResponse('fail', error.message));
+        res.status(error.statusCode).json(new ApiResponse(error.message));
       } else {
-        res.status(500).json(new ApiResponse('fail', 'Unexpected error' + error.message));
+        res.status(500).json(new ApiResponse('Unexpected error' + error.message));
       }
     }
   };

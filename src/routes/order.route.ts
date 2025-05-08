@@ -12,6 +12,8 @@ export class OrderRoute implements Route {
   }
 
   private initializeRoutes = () => {
-    this.router.post(`${this.path}/:userId`, this.order.createOrder);
+    // this.router.post(`${this.path}/:userId`, this.order.createOrder);
+    this.router.post(`${this.path}/pay`, this.order.orderPay);
+    this.router.post(`${this.path}/pay/validate`, this.order.validatePay);
   };
 }

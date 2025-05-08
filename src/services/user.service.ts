@@ -40,15 +40,6 @@ export class UserService {
       throw new CustomError(401, 'User already exists');
     }
 
-    const token = generateToken({ email, name });
-
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      maxAge: 3600000 * 72,
-    });
-
     const hashedPassword = await hashPassword(password);
     const createdUser = await this.user.create({
       data: { email: email, password: hashedPassword, name: name },
@@ -58,6 +49,16 @@ export class UserService {
         id: true,
       },
     });
+
+    const token = generateToken({ id: createdUser.id, email, name });
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 3600000 * 72,
+    });
+
     return createdUser;
   }
 
@@ -79,7 +80,7 @@ export class UserService {
       throw new CustomError(401, 'Data is not valid');
     }
 
-    const token = generateToken({ email, name: existingUser.name });
+    const token = generateToken({ id: existingUser.id, email, name: existingUser.name });
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -100,13 +101,47 @@ export class UserService {
 
     const user = await this.user.findUnique({
       where: { email: payload.email },
-      select: { id: true, name: true, email: true },
+      select: { id: true, name: true, email: true, phone: true, photo: true },
     });
+
+    console.log('payload', payload);
 
     if (!user) {
       throw new CustomError(404, 'User not found');
     }
 
     return user;
+  };
+
+  public changeUserData = async (token: string, params: any, res: any) => {
+    const payload: any = validateToken(token);
+
+    if (!payload) {
+      throw new CustomError(401, 'Token is not valid');
+    }
+
+    if (params.email) {
+      const existingUser = await this.user.findUnique({ where: { email: params.email } });
+
+      if (existingUser && existingUser.email !== payload.email) {
+        throw new CustomError(400, 'This email is already in use');
+      }
+    }
+
+    const newUser = await this.user.update({
+      where: { email: payload.email },
+      data: { ...params },
+    });
+
+    const newToken = generateToken({ id: newUser.id, email: newUser.email, name: newUser.name });
+
+    res.cookie('token', newToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 3600000 * 72,
+    });
+
+    return newUser;
   };
 }

@@ -15,6 +15,7 @@ export class UserRoute implements Route {
   private initializeRoutes() {
     this.router.post(`${this.path}/signup`, this.user.userRegister);
     this.router.post(`${this.path}/login`, this.user.userLogin);
-    this.router.get(`${this.path}/users`, this.user.getUser);
+    this.router.get(`${this.path}/user`, this.user.getUser);
+    this.router.patch(`${this.path}/user`, this.user.changeUserData)
   }
 }

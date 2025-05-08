@@ -1,4 +1,6 @@
+import { CustomError } from '@errors/CustomError';
 import { OrderHistory } from '@interfaces/order-history.interface';
+import { validateToken } from '@utils/jwt';
 import { prisma } from '@utils/prisma_db';
 import { Service } from 'typedi';
 
@@ -21,9 +23,17 @@ export class OrderHistoryService {
     return ordersHistory;
   };
 
-  public getOrdersHistory = async (userId: number): Promise<any> => {
-    let ordersHistory = await this.ordersHistory.findFirst({
-      where: { userId },
+  public getOrdersHistory = async (token: string): Promise<any> => {
+    const userPayload: any = validateToken(token);
+
+    if (!userPayload) {
+      throw new CustomError(401, 'Token is not valid');
+    }
+
+    console.log('userPayload', userPayload);
+
+    let ordersHistory = await this.ordersHistory.findUnique({
+      where: { userId: userPayload.id },
       include: {
         Orders: {
           include: {
@@ -34,7 +44,7 @@ export class OrderHistoryService {
     });
 
     if (!ordersHistory) {
-      ordersHistory = await this.createOrderHistory(userId);
+      ordersHistory = await this.createOrderHistory(userPayload.id);
     }
 
     return ordersHistory;
