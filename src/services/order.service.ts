@@ -62,7 +62,7 @@ export class OrderService {
 
     return {
       merchantAccount,
-      merchantDomainName: 'localhost',
+      merchantDomainName: 'https://front-food-production.up.railway.app/',
       orderReference,
       orderDate,
       amount,
