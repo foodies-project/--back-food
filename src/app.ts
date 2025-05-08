@@ -35,7 +35,7 @@ export class App {
   public initializeMiddlewares() {
     this.app.use(
       cors({
-        origin: ['http://localhost:5173', 'https://d560-185-179-214-48.ngrok-free.app'],
+        origin: ['http://localhost:5173', 'https://front-food-production.up.railway.app'],
         credentials: true,
         exposedHeaders: ['Content-Disposition'],
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
