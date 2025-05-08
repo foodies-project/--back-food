@@ -51,8 +51,12 @@ export class OrderController {
     }
   };
 
-  public validatePay = (req: Request) => {
+  public validatePay = (req: Request, res: Response) => {
     const body = req.body;
-    const validate = this.order.validatePay(body);
+    // const validate = this.order.validatePay(body);
+
+    console.log('body:', body);
+
+    res.status(200).json(body);
   };
 }
